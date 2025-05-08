@@ -30,14 +30,15 @@ class TransactionCategorizer:
         
         # Predefined categories
         self.categories = {
-            '1': 'Groceries',
+            '1': 'Food',
             '2': 'Transportation',
             '3': 'Entertainment',
-            '4': 'Bills & Utilities',
-            '5': 'Dining Out',
-            '6': 'Shopping',
-            '7': 'Income',
-            '8': 'Other'
+            '4': 'Bills & Utilities & Accomodation',
+            '5': 'Personal Items',
+            '6': 'Income',
+            '7': 'Gifts',
+            '8': 'Projects',
+            '9': 'Other'
         }
         
         self.current_index = 0
@@ -252,6 +253,7 @@ class TransactionCategorizer:
                     'Merchant': 'description',
                     'Amount': 'cost',
                     'Value': 'cost',
+                    'Billing Amount': 'cost',
                     'Transaction Amount': 'cost'
                 }
                 
@@ -288,7 +290,7 @@ class TransactionCategorizer:
                 # Clean up cost values
                 if isinstance(df['cost'].iloc[0], str):
                     # Remove currency symbols and commas, then convert to float
-                    df['cost'] = df['cost'].str.replace('£', '').str.replace(',', '').str.replace('$', '')
+                    df['cost'] = df['cost'].str.replace('£', '').str.replace(',', '')
                 df['cost'] = pd.to_numeric(df['cost'], errors='coerce').fillna(0)
                 
                 # Filter duplicates
@@ -333,7 +335,7 @@ class TransactionCategorizer:
             transaction = self.transactions.iloc[self.current_index]
             self.date_label.config(text=f"Date: {transaction['date']}")
             self.description_label.config(text=f"Description: {transaction['description']}")
-            self.cost_label.config(text=f"Amount: ${transaction['cost']:.2f}")
+            self.cost_label.config(text=f"Amount: £{transaction['cost']:.2f}")
             
             # Update navigation buttons state
             self.prev_button.config(state=tk.NORMAL if self.current_index > 0 else tk.DISABLED)
@@ -545,7 +547,7 @@ class TransactionCategorizer:
         sns.barplot(x='period', y='cost', hue='category', data=df, ax=self.ax)
         self.ax.set_title('Monthly Income/Expenses')
         self.ax.set_xlabel('Month')
-        self.ax.set_ylabel('Amount ($)')
+        self.ax.set_ylabel('Amount (£)')
         plt.xticks(rotation=45)
         plt.tight_layout()
         
@@ -697,7 +699,7 @@ class TransactionCategorizer:
             for col in range(2, current_col + 1):
                 cell = ws.cell(row=row, column=col)
                 if isinstance(cell.value, (int, float)):
-                    cell.number_format = '$#,##0.00'
+                    cell.number_format = '£#,##0.00'
         
         # Adjust column widths
         for col in range(1, current_col + 1):
