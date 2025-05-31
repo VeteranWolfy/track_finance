@@ -38,7 +38,8 @@ class TransactionCategorizer:
             '6': 'Income',
             '7': 'Gifts',
             '8': 'Projects',
-            '9': 'Other'
+            '9': 'Holidays',
+            '0': 'Other'
         }
         
         self.current_index = 0
